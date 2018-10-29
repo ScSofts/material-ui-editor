@@ -14,24 +14,39 @@ class ProjectService {
     }
 
     getTemplateList (callback) {
-        readdir(templatesPath, { withFileTypes: true }, (err, files) => {
-            const templateList = files.filter(file => file.isDirectory()).map(dir => dir.name);
-            callback(templateList);
+        readdir(templatesPath, { withFileTypes: true }, (error, files) => {
+            if(error) {
+                callback(error, null);
+            }
+            else {
+                const templateList = files.filter(file => file.isDirectory()).map(dir => dir.name);
+                callback(null, templateList);
+            }
         })
     }
 
     getProjectList (callback) {
-        readdir(projectsPath, { withFileTypes: true }, (err, files) => {
-            const projectList = files.filter(file => file.isDirectory() && file.name !== 'templates').map(dir => dir.name);
-            callback(projectList);
+        readdir(projectsPath, { withFileTypes: true }, (error, files) => {
+            if(error) {
+                callback(error, null);
+            }
+            else {
+                const projectList = files.filter(file => file.isDirectory() && file.name !== 'templates').map(dir => dir.name);
+                callback(null, projectList);
+            }
         })
     }
 
     getPageList (projectName, callback) {
         const pagesPath = `${projectsPath}${projectName}/src/components/pages/`;
-        readdir(pagesPath, { withFileTypes: true }, (err, files) => {
-            const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
-            callback(pageList);
+        readdir(pagesPath, { withFileTypes: true }, (error, files) => {
+            if(error) {
+                callback(error, null);
+            }
+            else {
+                const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
+                callback(null, pageList);
+            }
         })
     }
 
@@ -44,25 +59,29 @@ class ProjectService {
 
             const sourceDir = join(__dirname, '..', templatesPath, templateName);
             const destDir = join(__dirname, '..', projectsPath, projectName);
-            copy(sourceDir, destDir)
-                .then(() => {
+            copy(sourceDir, destDir, error => {
+                if(error) {
+                    callback(error, null);
+                }
+                else {
                     execSync('npm install', {
                         cwd: destDir
                     });
-
+    
                     exec('npm start -- --port ' + maxPort, {
                         cwd: destDir
                     },
-                    function(error) {
-                        if(error === null) {
-                            this.projects.push({name: projectName.toLowerCase(), port: maxPort});
-                            callback({port: maxPort});                            
+                    error => {
+                        if(error) {
+                            callback(error, null);
                         }
                         else {
-                            callback(error);
+                            this.projects.push({name: projectName.toLowerCase(), port: maxPort});
+                            callback(null, {port: maxPort});                            
                         }
                     });
-                });
+                }
+            });
         }
     }
 
@@ -79,10 +98,10 @@ class ProjectService {
             });
 
             this.projects.push({name: projectName.toLowerCase(), port: maxPort});
-            callback({port: maxPort});  
+            callback(null, {port: maxPort});  
         }
         else {
-            callback({port: p[0].port});
+            callback(null, {port: p[0].port});
         }
     }
 

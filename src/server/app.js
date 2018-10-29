@@ -16,4 +16,13 @@ app.use(express.static('dist'));
 app.use('/api/projects', projectsRouter);
 app.use('/api/upload', uploadRouter);
 
+app.use((error, req, res, next) => {
+    res.status(error.status || 500);
+    res.json({
+        error: {
+            message: error.message,
+        },
+    });
+});
+
 module.exports = app;

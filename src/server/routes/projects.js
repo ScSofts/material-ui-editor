@@ -4,43 +4,68 @@ const router = express.Router();
 var projectService = require('../services/project-service');
 
 /* GET project list. */
-router.get('/', function(req, res) {
-    projectService.getProjectList(projectList => {
-        res.json(projectList);
+router.get('/', function(req, res, next) {
+    projectService.getProjectList((error, result) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* POST create project. */
-router.post('/', function(req, res) {
+router.post('/', function(req, res, next) {
     const templateName = req.body.template;
     const projectName = req.body.project;
 
-    projectService.createProject(templateName, projectName, result => {
-        res.json(result);
+    projectService.createProject(templateName, projectName, (error, result) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* POST open project. */
-router.post('/:projectName', function(req, res) {
+router.post('/:projectName', function(req, res, next) {
     const projectName = req.params.projectName;
 
-    projectService.openProject(projectName, result => {
-        res.json(result);
+    projectService.openProject(projectName, (error, result) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* GET template list. */
-router.get('/templates', function(req, res) {
-    projectService.getTemplateList(templateList => {
-        res.json(templateList);
+router.get('/templates', (req, res, next) => {
+    projectService.getTemplateList((error, result) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* GET page list. */
-router.get('/:projectName/pages', function(req, res) {
+router.get('/:projectName/pages', function(req, res, next) {
     const projectName = req.params.projectName;
-    projectService.getPageList(projectName, pageList => {
-        res.json(pageList);
+    projectService.getPageList(projectName, (error, result) => {
+        if(error) {
+            next(error);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
