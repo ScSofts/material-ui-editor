@@ -26,6 +26,16 @@ module.exports = {
       {
         test: /\.(png|woff|woff2|eot|ttf|svg)$/,
         loader: 'url-loader?limit=100000'
+      },
+      {
+        test: /\.(js|jsx)$/,
+        enforce: 'pre',
+        include: [/src/],
+        exclude: /node_modules/,
+        loader: 'eslint-loader',
+        options: {
+            emitWarning: false
+        }
       }
     ]
   },
