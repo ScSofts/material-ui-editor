@@ -2,7 +2,7 @@ var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var downloadRouter = require('./routes/download');
+var projectsRouter = require('./routes/projects');
 var uploadRouter = require('./routes/upload');
 
 var app = express();
@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use(express.static('dist'));
-app.use('/api/download', downloadRouter);
+app.use('/api/projects', projectsRouter);
 app.use('/api/upload', uploadRouter);
 
 module.exports = app;

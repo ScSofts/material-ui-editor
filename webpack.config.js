@@ -13,7 +13,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader'
@@ -42,5 +42,8 @@ module.exports = {
       template: './public/index.html',
       favicon: './public/favicon.ico'
     })
-  ]
+  ],
+  resolve: {
+    extensions: ['.js', '.jsx']
+  }
 };

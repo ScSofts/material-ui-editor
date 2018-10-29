@@ -1,5 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import { observer, Provider } from "mobx-react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+import AppMain from "./components/app-main";
+import SessionStore from "./stores/session.store";
+
+export const stores = new SessionStore();
+
+@observer
+class Root extends React.Component {
+    render() {
+        const appMain = props => {
+            return <AppMain {...props} />;
+        };
+        return (
+            <Provider {...stores}>
+                <BrowserRouter>
+                    <Switch>
+                        <Route exact path="/" component={appMain} />
+                    </Switch>
+                </BrowserRouter>
+            </Provider>
+        );
+    }
+}
+
+ReactDOM.render(<Root />, document.getElementById('root'));
