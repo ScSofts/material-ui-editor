@@ -4,10 +4,10 @@ const router = express.Router();
 var projectService = require('../services/project-service');
 
 /* GET project list. */
-router.get('/', function(req, res, next) {
-    projectService.getProjectList((error, result) => {
-        if(error) {
-            next(error);
+router.get('/', (req, res, next) => {
+    projectService.getProjectList((err, result) => {
+        if(err) {
+            next(err);
         }
         else {
             res.json(result);
@@ -16,13 +16,13 @@ router.get('/', function(req, res, next) {
 });
 
 /* POST create project. */
-router.post('/', function(req, res, next) {
+router.post('/', (req, res, next) => {
     const templateName = req.body.template;
     const projectName = req.body.project;
 
-    projectService.createProject(templateName, projectName, (error, result) => {
-        if(error) {
-            next(error);
+    projectService.createProject(templateName, projectName, (err, result) => {
+        if(err) {
+            next(err);
         }
         else {
             res.json(result);
@@ -31,12 +31,12 @@ router.post('/', function(req, res, next) {
 });
 
 /* POST open project. */
-router.post('/:projectName', function(req, res, next) {
+router.post('/:projectName', (req, res, next) => {
     const projectName = req.params.projectName;
 
-    projectService.openProject(projectName, (error, result) => {
-        if(error) {
-            next(error);
+    projectService.openProject(projectName, (err, result) => {
+        if(err) {
+            next(err);
         }
         else {
             res.json(result);
@@ -46,9 +46,9 @@ router.post('/:projectName', function(req, res, next) {
 
 /* GET template list. */
 router.get('/templates', (req, res, next) => {
-    projectService.getTemplateList((error, result) => {
-        if(error) {
-            next(error);
+    projectService.getTemplateList((err, result) => {
+        if(err) {
+            next(err);
         }
         else {
             res.json(result);
@@ -57,11 +57,12 @@ router.get('/templates', (req, res, next) => {
 });
 
 /* GET page list. */
-router.get('/:projectName/pages', function(req, res, next) {
+router.get('/:projectName/pages', (req, res, next) => {
     const projectName = req.params.projectName;
-    projectService.getPageList(projectName, (error, result) => {
-        if(error) {
-            next(error);
+
+    projectService.getPageList(projectName, (err, result) => {
+        if(err) {
+            next(err);
         }
         else {
             res.json(result);
@@ -70,50 +71,79 @@ router.get('/:projectName/pages', function(req, res, next) {
 });
 
 /* GET page content. */
-router.get('/:projectName/pages/:pageName', function(req, res) {
+router.get('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
-    projectService.getPageContent(projectName, pageName, pageContent => {
-        res.json(pageContent);
+
+    projectService.getPageContent(projectName, pageName, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* PUT page content. */
-router.put('/:projectName/pages/:pageName', function(req, res) {
+router.put('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
     const content = req.body.content;
-    projectService.savePageContent(projectName, pageName, content, result => {
-        res.json(result);
+
+    projectService.savePageContent(projectName, pageName, content, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else{
+            res.json(result);
+        }
     });
 });
 
 /* POST add page. */
-router.post('/:projectName/pages/:pageName', function(req, res) {
+router.post('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
     const content = req.body.content;
-    projectService.addPage(projectName, pageName, content, result => {
-        res.json(result);
+
+    projectService.addPage(projectName, pageName, content, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 /* POST delete page. */
-router.delete('/:projectName/pages/:pageName', function(req, res) {
+router.delete('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
-    projectService.deletePage(projectName, pageName, result => {
-        res.json(result);
+
+    projectService.deletePage(projectName, pageName, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.json(result);
+        }
     });
 });
 
 
 /* GET export project. */
-router.get('/:projectName/export', function(req, res){
+router.get('/:projectName/export', (req, res, next) => {
     const projectName = req.params.projectName;
 
-    projectService.exportProject(projectName, result => {
-        res.download(result);
+    projectService.exportProject(projectName, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.download(result);
+        }
     });
 });
 

@@ -2,6 +2,7 @@ const { exec, execSync } = require('child_process')
 const { readdir, readFile, writeFile, unlink, createWriteStream } = require('fs');
 const { copy } = require('fs-extra');
 const { join, parse } = require('path');
+const { setSync } = require('winattr');
 const archiver = require('archiver');
 
 const projectsPath = './projects/';
@@ -14,9 +15,9 @@ class ProjectService {
     }
 
     getTemplateList (callback) {
-        readdir(templatesPath, { withFileTypes: true }, (error, files) => {
-            if(error) {
-                callback(error, null);
+        readdir(templatesPath, { withFileTypes: true }, (err, files) => {
+            if(err) {
+                callback(err, null);
             }
             else {
                 const templateList = files.filter(file => file.isDirectory()).map(dir => dir.name);
@@ -26,9 +27,9 @@ class ProjectService {
     }
 
     getProjectList (callback) {
-        readdir(projectsPath, { withFileTypes: true }, (error, files) => {
-            if(error) {
-                callback(error, null);
+        readdir(projectsPath, { withFileTypes: true }, (err, files) => {
+            if(err) {
+                callback(err, null);
             }
             else {
                 const projectList = files.filter(file => file.isDirectory() && file.name !== 'templates').map(dir => dir.name);
@@ -39,9 +40,9 @@ class ProjectService {
 
     getPageList (projectName, callback) {
         const pagesPath = `${projectsPath}${projectName}/src/components/pages/`;
-        readdir(pagesPath, { withFileTypes: true }, (error, files) => {
-            if(error) {
-                callback(error, null);
+        readdir(pagesPath, { withFileTypes: true }, (err, files) => {
+            if(err) {
+                callback(err, null);
             }
             else {
                 const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
@@ -59,27 +60,24 @@ class ProjectService {
 
             const sourceDir = join(__dirname, '..', templatesPath, templateName);
             const destDir = join(__dirname, '..', projectsPath, projectName);
-            copy(sourceDir, destDir, error => {
-                if(error) {
-                    callback(error, null);
+            copy(sourceDir, destDir, err => {
+                if(err) {
+                    callback(err, null);
                 }
                 else {
+                    // Make the files in the copied folder writable
+                    setSync(destDir, {readonly: false});
+
                     execSync('npm install', {
                         cwd: destDir
                     });
     
                     exec('npm start -- --port ' + maxPort, {
                         cwd: destDir
-                    },
-                    error => {
-                        if(error) {
-                            callback(error, null);
-                        }
-                        else {
-                            this.projects.push({name: projectName.toLowerCase(), port: maxPort});
-                            callback(null, {port: maxPort});                            
-                        }
                     });
+
+                    this.projects.push({name: projectName.toLowerCase(), port: maxPort});
+                    callback(null, {port: maxPort});                            
                 }
             });
         }
@@ -113,33 +111,38 @@ class ProjectService {
     getPageContent(projectName, pageName, callback) {
         const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
 
-        readFile(pagePath, function (error, data) {
-            if(error == null) {
-                callback(data.toString());
+        readFile(pagePath, (err, data) => {
+            if(err) {
+                callback(err, null);                
             }
             else {
-                callback(error);
+                callback(null, data.toString());
             }
-          });
+        });
     }
 
     savePageContent(projectName, pageName, content, callback) {
         const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
 
-        writeFile(pagePath, content, function (error) {
-            callback(error);
+        writeFile(pagePath, content, err => {
+            if(err) {
+                callback(err, null);
+            }
+            else {
+                callback(null, {status: 'success'});
+            }
         });
     }
 
     addPage(projectName, pageName, content, callback) {
         const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
 
-        writeFile(pagePath, content, function (error) {
-            if(error == null) {
-                this.updatePageIndex(projectName, callback);
+        writeFile(pagePath, content, err => {
+            if(err) {
+                callback(err, null);
             }
             else {
-                callback(error);
+                this.updatePageIndex(projectName, callback);
             }
         });
     }
@@ -147,12 +150,12 @@ class ProjectService {
     deletePage(projectName, pageName, callback) {
         const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
 
-        unlink(pagePath, error => {
-            if (error == null) {
-                this.updatePageIndex(projectName, callback);
+        unlink(pagePath, err => {
+            if (err) {
+                callback(err, null);
             }
             else {
-                callback(error);
+                this.updatePageIndex(projectName, callback);
             }
         });
     }
@@ -161,18 +164,28 @@ class ProjectService {
         const pagesPath = `${projectsPath}${projectName}/src/components/pages/`;
         
         readdir(pagesPath, { withFileTypes: true }, (err, files) => {
-            const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
-            const pageIndexPath = join(projectsPath, projectName, 'src/components/pages/index.js');
-            const pageIndexContentList = [];
-            
-            pageList.forEach(page => {
-                const pageIndexEntry = `export * from './${page}';`;
-                pageIndexContentList.push(pageIndexEntry);
-            });
-
-            writeFile(pageIndexPath, pageIndexContentList.join('\n'), function (error) {
-                callback(error);
-            });
+            if(err) {
+                callback(err, null);
+            }
+            else {
+                const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
+                const pageIndexPath = join(projectsPath, projectName, 'src/components/pages/index.js');
+                const pageIndexContentList = [];
+                
+                pageList.forEach(page => {
+                    const pageIndexEntry = `export * from './${page}';`;
+                    pageIndexContentList.push(pageIndexEntry);
+                });
+    
+                writeFile(pageIndexPath, pageIndexContentList.join('\n'), err => {
+                    if(err) {
+                        callback(err, null);
+                    }
+                    else {
+                        callback(null, {status: 'success'});
+                    }
+                });
+            }
         })
     }
 
@@ -188,14 +201,14 @@ class ProjectService {
         const output = createWriteStream(exportFile);
         const archive = archiver('zip');
 
-        output.on('close', function () {
+        output.on('close', () => {
             console.log(archive.pointer() + ' total bytes');
             console.log('archiver has been finalized and the output file descriptor has closed.');
-            callback(exportFile);
+            callback(null, exportFile);
         });
         
-        archive.on('error', function(err){
-            throw err;
+        archive.on('error', (err) => {
+            callback(err, null);
         });
         
         archive.pipe(output);

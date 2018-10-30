@@ -27,7 +27,7 @@ class DeletePageDialog extends React.Component {
                         onClick={this.handleDeletePage} 
                         color="primary"
                     >
-                        OK
+                        Delete
                     </Button>
                 </DialogActions>
             </Dialog>
