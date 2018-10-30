@@ -1,5 +1,5 @@
 const { exec, execSync } = require('child_process')
-const { readdir, readFile, writeFile, unlink, createWriteStream } = require('fs');
+const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync } = require('fs');
 const { copy } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
@@ -8,6 +8,7 @@ const archiver = require('archiver');
 const projectsPath = './projects/';
 const templatesPath = `${projectsPath}templates/`;
 const exportPath = './export/';
+const pagesPath = 'src/components/pages';
 
 class ProjectService {
     constructor() {
@@ -23,7 +24,7 @@ class ProjectService {
                 const templateList = files.filter(file => file.isDirectory()).map(dir => dir.name);
                 callback(null, templateList);
             }
-        })
+        });
     }
 
     getProjectList (callback) {
@@ -35,12 +36,13 @@ class ProjectService {
                 const projectList = files.filter(file => file.isDirectory() && file.name !== 'templates').map(dir => dir.name);
                 callback(null, projectList);
             }
-        })
+        });
     }
 
     getPageList (projectName, callback) {
-        const pagesPath = `${projectsPath}${projectName}/src/components/pages/`;
-        readdir(pagesPath, { withFileTypes: true }, (err, files) => {
+        const pagesDir = join(projectsPath, projectName, pagesPath);
+
+        readdir(pagesDir, { withFileTypes: true }, (err, files) => {
             if(err) {
                 callback(err, null);
             }
@@ -48,7 +50,7 @@ class ProjectService {
                 const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
                 callback(null, pageList);
             }
-        })
+        });
     }
 
     createProject (templateName, projectName, callback) {
@@ -60,13 +62,15 @@ class ProjectService {
 
             const sourceDir = join(__dirname, '..', templatesPath, templateName);
             const destDir = join(__dirname, '..', projectsPath, projectName);
+
             copy(sourceDir, destDir, err => {
                 if(err) {
                     callback(err, null);
                 }
                 else {
-                    // Make the files in the copied folder writable
-                    setSync(destDir, {readonly: false});
+                    const pagesDir = join(destDir, pagesPath);
+                    // Remove read-only attribute from the files in the pages folder
+                    this.clearReadonly(pagesDir);
 
                     execSync('npm install', {
                         cwd: destDir
@@ -108,21 +112,31 @@ class ProjectService {
         return ports.length > 0 ? Math.max(...[ports]) : 0;
     }
 
+    clearReadonly(dir) {
+        const files = readdirSync(dir, { withFileTypes: true });
+        const fileList = files.filter(file => !file.isDirectory()).map(file => file.name);
+
+        fileList.forEach(file => {
+            const filePath = join(dir, file);
+            setSync(filePath, {readonly: false});
+        });
+    }
+
     getPageContent(projectName, pageName, callback) {
-        const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
+        const pagePath = join(projectsPath, projectName, pagesPath, pageName) + '.jsx';
 
         readFile(pagePath, (err, data) => {
             if(err) {
-                callback(err, null);                
+                callback(err, null);
             }
             else {
                 callback(null, data.toString());
             }
-        });
+          });
     }
 
     savePageContent(projectName, pageName, content, callback) {
-        const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
+        const pagePath = join(projectsPath, projectName, pagesPath, pageName) + '.jsx';
 
         writeFile(pagePath, content, err => {
             if(err) {
@@ -135,7 +149,7 @@ class ProjectService {
     }
 
     addPage(projectName, pageName, content, callback) {
-        const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
+        const pagePath = join(projectsPath, projectName, pagesPath, pageName) + '.jsx';
 
         writeFile(pagePath, content, err => {
             if(err) {
@@ -148,7 +162,7 @@ class ProjectService {
     }
 
     deletePage(projectName, pageName, callback) {
-        const pagePath = join(projectsPath, projectName, 'src/components/pages', pageName) + '.jsx';
+        const pagePath = join(projectsPath, projectName, pagesPath, pageName) + '.jsx';
 
         unlink(pagePath, err => {
             if (err) {
@@ -161,22 +175,22 @@ class ProjectService {
     }
 
     updatePageIndex(projectName, callback) {
-        const pagesPath = `${projectsPath}${projectName}/src/components/pages/`;
+        const pagesDir = join(projectsPath, projectName, pagesPath);
         
-        readdir(pagesPath, { withFileTypes: true }, (err, files) => {
+        readdir(pagesDir, { withFileTypes: true }, (err, files) => {
             if(err) {
                 callback(err, null);
             }
             else {
                 const pageList = files.filter(file => !file.isDirectory() && file.name !== 'index.js').map(file => parse(file.name).name);
-                const pageIndexPath = join(projectsPath, projectName, 'src/components/pages/index.js');
+                const pageIndexPath = join(pagesDir, 'index.js');
                 const pageIndexContentList = [];
                 
                 pageList.forEach(page => {
                     const pageIndexEntry = `export * from './${page}';`;
                     pageIndexContentList.push(pageIndexEntry);
                 });
-    
+
                 writeFile(pageIndexPath, pageIndexContentList.join('\n'), err => {
                     if(err) {
                         callback(err, null);
@@ -190,7 +204,7 @@ class ProjectService {
     }
 
     exportProject(projectName, callback) {
-        this.archiveProject(projectName, result => callback(result))
+        this.archiveProject(projectName, (err, result) => callback(err, result));
     }
 
     archiveProject(projectName, callback) {
@@ -207,7 +221,7 @@ class ProjectService {
             callback(null, exportFile);
         });
         
-        archive.on('error', (err) => {
+        archive.on('error', err => {
             callback(err, null);
         });
         

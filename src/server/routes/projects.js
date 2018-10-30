@@ -59,7 +59,6 @@ router.get('/templates', (req, res, next) => {
 /* GET page list. */
 router.get('/:projectName/pages', (req, res, next) => {
     const projectName = req.params.projectName;
-
     projectService.getPageList(projectName, (err, result) => {
         if(err) {
             next(err);
@@ -74,7 +73,7 @@ router.get('/:projectName/pages', (req, res, next) => {
 router.get('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
-
+    
     projectService.getPageContent(projectName, pageName, (err, result) => {
         if(err) {
             next(err);
@@ -95,7 +94,7 @@ router.put('/:projectName/pages/:pageName', (req, res, next) => {
         if(err) {
             next(err);
         }
-        else{
+        else {
             res.json(result);
         }
     });

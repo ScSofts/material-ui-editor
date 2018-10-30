@@ -25,8 +25,38 @@ import TableIcon from '@material-ui/icons/TableChart';
 import TabIcon from '@material-ui/icons/Tab';
 import TextFieldIcon from '@material-ui/icons/TextFields';
 import TooltipIcon from '@material-ui/icons/ChatBubble';
+import GridIcon from '@material-ui/icons/GridOn';
 
 export const components = [
+  {
+    name: 'Grid',
+    displayName: 'Grid',
+    icon: <GridIcon />,
+    snippet: 
+`<Grid container spacing={24}>
+    <Grid item xs={12} sm={4}>
+        <Paper>xs=12 sm=4</Paper>
+    </Grid>
+    <Grid item xs={12} sm={4}>
+        <Paper>xs=12 sm=4</Paper>
+    </Grid>
+    <Grid item xs={12} sm={4}>
+        <Paper>xs=12 sm=4</Paper>
+    </Grid>
+</Grid>
+`,
+    imports: [`import Grid from '@material-ui/core/Grid';\n`,
+        `import Paper from '@material-ui/core/Paper';\n`]
+    },
+    {
+        name: 'Avatar',
+        displayName: 'Avatar',
+        icon: <AvatarIcon />,
+        snippet: 
+`<Avatar>A</Avatar>
+`,
+        imports: [`import Avatar from '@material-ui/core/Avatar';\n`]
+    },
     {
         name: 'AppBar',
         displayName: 'App Bar',
@@ -41,8 +71,8 @@ export const components = [
 </AppBar>
 `,
         imports: [`import AppBar from '@material-ui/core/AppBar';\n`,
-        `import Toolbar from '@material-ui/core/Toolbar';\n`,
-        `import Typography from '@material-ui/core/Typography';\n`]
+            `import Toolbar from '@material-ui/core/Toolbar';\n`,
+            `import Typography from '@material-ui/core/Typography';\n`]
     },
     {
         name: 'Avatar',
@@ -65,7 +95,7 @@ export const components = [
 </Badge>
 `,
         imports: [`import Badge from '@material-ui/core/Badge';\n`,
-        `import Typography from '@material-ui/core/Typography';\n`]
+            `import Typography from '@material-ui/core/Typography';\n`]
     },
     {
         name: 'BottomNavigation',
@@ -79,7 +109,7 @@ export const components = [
 </BottomNavigation>
 `,
         imports: [`import BottomNavigation from '@material-ui/core/BottomNavigation';\n`,
-        `import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';\n`]
+            `import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';\n`]
     },
     {
         name: 'Button',
@@ -107,8 +137,8 @@ export const components = [
 </Card>
 `,
         imports: [`import Card from '@material-ui/core/Card';\n`,
-        `import CardActions from '@material-ui/core/CardActions';\n`,
-        `import CardContent from '@material-ui/core/CardContent';\n`]
+            `import CardActions from '@material-ui/core/CardActions';\n`,
+            `import CardContent from '@material-ui/core/CardContent';\n`]
     },
     {
         name: 'Chip',
@@ -140,11 +170,11 @@ export const components = [
 </div>
 `,
         imports: [`import Dialog from '@material-ui/core/Dialog';\n`,
-        `import DialogTitle from '@material-ui/core/DialogTitle';\n`,
-        `import DialogContent from '@material-ui/core/DialogContent';\n`,
-        `import DialogContentText from '@material-ui/core/DialogContentText';\n`,
-        `import DialogActions from '@material-ui/core/DialogActions';\n`,
-        `import Button from '@material-ui/core/Button';\n`]
+            `import DialogTitle from '@material-ui/core/DialogTitle';\n`,
+            `import DialogContent from '@material-ui/core/DialogContent';\n`,
+            `import DialogContentText from '@material-ui/core/DialogContentText';\n`,
+            `import DialogActions from '@material-ui/core/DialogActions';\n`,
+            `import Button from '@material-ui/core/Button';\n`]
     },
     {
         name: 'Divider',
@@ -170,8 +200,8 @@ export const components = [
 </div>
 `,
         imports: [`import Drawer from '@material-ui/core/Drawer';\n`,
-        `import Button from '@material-ui/core/Button';\n`,
-        `import Typography from '@material-ui/core/Typography';\n`]
+            `import Button from '@material-ui/core/Button';\n`,
+            `import Typography from '@material-ui/core/Typography';\n`]
     },
     {
         name: 'ExpansionPanel',
@@ -188,9 +218,9 @@ export const components = [
 </ExpansionPanel>
 `,
         imports: [`import ExpansionPanel from '@material-ui/core/ExpansionPanel';\n`,
-        `import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';\n`,
-        `import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';\n`,
-        `import Typography from '@material-ui/core/Typography';\n`]
+            `import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';\n`,
+            `import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';\n`,
+            `import Typography from '@material-ui/core/Typography';\n`]
     },
     {
         name: 'List',
@@ -207,8 +237,8 @@ export const components = [
 </List>
 `,
         imports: [`import List from '@material-ui/core/List';\n`,
-        `import ListItem from '@material-ui/core/ListItem';\n`,
-        `import ListItemText from '@material-ui/core/ListItemText';\n`]
+            `import ListItem from '@material-ui/core/ListItem';\n`,
+            `import ListItemText from '@material-ui/core/ListItemText';\n`]
     },
     {
         name: 'Menu',
@@ -296,7 +326,7 @@ export const components = [
 </RadioGroup>
 `,
         imports:[`import RadioGroup from '@material-ui/core/RadioGroup';\n`,
-        `import FormControlLabel from '@material-ui/core/FormControlLabel';\n`] 
+            `import FormControlLabel from '@material-ui/core/FormControlLabel';\n`] 
     },
     {
         name: 'Switch',
@@ -322,9 +352,9 @@ export const components = [
 </FormControl>
 `,
         imports:[`import Select from '@material-ui/core/Select';\n`,
-        `import FormControl from '@material-ui/core/FormControl';\n`,
-        `import InputLabel from '@material-ui/core/InputLabel';\n`,
-        `import MenuItem from '@material-ui/core/MenuItem';\n`] 
+            `import FormControl from '@material-ui/core/FormControl';\n`,
+            `import InputLabel from '@material-ui/core/InputLabel';\n`,
+            `import MenuItem from '@material-ui/core/MenuItem';\n`] 
     },
     {
         name: 'Snackbar',
@@ -337,7 +367,7 @@ export const components = [
 </div>
 `,
         imports:[`import Snackbar from '@material-ui/core/Snackbar';\n`,
-        `import Button from '@material-ui/core/Button';\n`] 
+            `import Button from '@material-ui/core/Button';\n`] 
     },
     {
         name: 'Table',
@@ -367,10 +397,10 @@ export const components = [
 </Table>
 `,
         imports:[`import Table from '@material-ui/core/Table';\n`,
-        `import TableBody from '@material-ui/core/TableBody';\n`,
-        `import TableCell from '@material-ui/core/TableCell';\n`,
-        `import TableHead from '@material-ui/core/TableHead';\n`,
-        `import TableRow from '@material-ui/core/TableRow';\n`] 
+            `import TableBody from '@material-ui/core/TableBody';\n`,
+            `import TableCell from '@material-ui/core/TableCell';\n`,
+            `import TableHead from '@material-ui/core/TableHead';\n`,
+            `import TableRow from '@material-ui/core/TableRow';\n`] 
     },
     {
         name: 'Tab',
@@ -394,7 +424,7 @@ export const components = [
 </div>
 `,
         imports:[`import Tabs from '@material-ui/core/Tabs';\n`,
-        `import Tab from '@material-ui/core/Tab';\n`] 
+            `import Tab from '@material-ui/core/Tab';\n`] 
     },
     {
         name: 'TextField',
@@ -415,6 +445,6 @@ export const components = [
 </Tooltip>
 `,
         imports:[`import Tooltip from '@material-ui/core/Tooltip';\n`,
-        `import Button from '@material-ui/core/Button';\n`]
+            `import Button from '@material-ui/core/Button';\n`]
     }
 ];
