@@ -140,13 +140,13 @@ class CreateProjectDialog extends React.Component {
 
     handleCreateClick = () => {
         const { projectStore } = this.props;
+        const projectName = projectStore.tempProjectName.toPascalCase();
 
         // Create project
-        projectStore.createProject(projectStore.tempTemplateName, projectStore.tempProjectName);
+        projectStore.createProject(projectStore.tempTemplateName, projectName);
         
         projectStore.setTemplateName(projectStore.tempTemplateName);
-        projectStore.setProjectName(projectStore.tempProjectName);
-        this.handleClose();
+        projectStore.setProjectName(projectName);        this.handleClose();
     }
 }
 

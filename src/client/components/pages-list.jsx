@@ -10,6 +10,7 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 
+import AddPageDialog from './add-page-dialog';
 import DeletePageDialog from './delete-page-dialog';
 
 @inject('rootStore', 'projectStore')
@@ -58,6 +59,7 @@ class PagesList extends React.Component {
                         <ListItemText primary={page} />
                     </ListItem>)}
                 </List>
+                <AddPageDialog/>
                 <DeletePageDialog/>
             </div>
         );
@@ -74,7 +76,7 @@ class PagesList extends React.Component {
     }
 
     addPageHandler = () => {
-
+        this.props.rootStore.setAddPageDialogOpen(true);
     }
 
     deletePageHandler = () => {

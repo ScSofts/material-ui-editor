@@ -42,6 +42,7 @@ class HeaderMenu extends React.Component {
                     anchorEl={anchorEl}
                     transformOrigin={{ vertical: "bottom", horizontal: "right" }}
                     open={open}
+                    onClick={this.handleClose}
                     onClose={this.handleClose}
                 >
                     <MenuItem onClick={this.createProjectClickHandler}>Create Project</MenuItem>
@@ -49,7 +50,7 @@ class HeaderMenu extends React.Component {
                     <Divider />
                     <MenuItem onClick={this.pageListClickHandler}>Toggle Page List</MenuItem>
                     <Divider />
-                    <MenuItem component="a" href={`/projects/${projectStore.projectName}/export`}>Export Project</MenuItem>
+                    <MenuItem component="a" href={`/projects/${projectStore.projectName}/export`} disabled={!projectStore.projectName}>Export Project</MenuItem>
                     <MenuItem onClick={this.importClickHandler}>Import Project</MenuItem>
                     <Divider />
                     <MenuItem onClick={this.helpClickHandler}>Help</MenuItem>

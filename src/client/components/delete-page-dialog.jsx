@@ -40,7 +40,9 @@ class DeletePageDialog extends React.Component {
 
     handleDeletePage = () => {
         const { projectStore } = this.props;
+
         projectStore.deletePage(projectStore.projectName, projectStore.selectedPage);
+        this.handleClose();
     }
 }
 

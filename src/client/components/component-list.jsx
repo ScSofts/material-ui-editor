@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { observer, inject } from 'mobx-react';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -6,13 +8,16 @@ import Tooltip from '@material-ui/core/Tooltip';
 
 import { components } from '../constants/components';
 
+@inject('projectStore')
+@observer
 class ComponentList extends React.Component {
     render() {
+        const { projectStore } = this.props;
         return (
             <List>
                 {
                     components.map((component, index) =>
-                        <ListItem button key={index} onClick={this.componentClickHandler(component)}>
+                        <ListItem button key={index} onClick={this.componentClickHandler(component)} disabled={!projectsStore.projectName}>
                             <Tooltip title={component.displayName}>
                                 <ListItemIcon>
                                     {component.icon}
@@ -42,6 +47,10 @@ class ComponentList extends React.Component {
         
         editor.focus();
     }
+}
+
+ComponentList.propTypes = {
+    projectsStore: PropTypes.object
 }
 
 export default ComponentList;

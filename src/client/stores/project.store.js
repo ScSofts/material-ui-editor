@@ -20,6 +20,7 @@ export default class ProjectStore {
     @observable templateName = null;
     @observable projectName = null;
     @observable selectedPage = null;
+    @observable tempPageName = null;
     @observable currentProjectResult = null;
     @observable createProjectError = null;
     @observable openProjectError = null;
@@ -129,6 +130,11 @@ export default class ProjectStore {
         this.selectedPage = page;
     }
 
+    @action
+    setTempPageName = (name) => {
+        this.tempPageName = name;
+    }
+    
     @action
     getPageContent = (projectName, pageName) => {
         projectService.getPageContent(projectName, pageName).then(response => {
