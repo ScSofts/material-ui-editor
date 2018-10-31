@@ -38,7 +38,7 @@ export default class ProjectStore {
         projectService.getTemplateList().then(response =>{
             runInAction(() =>{
                 this.templateList = response;
-            })
+            });
         }).catch(error => {
             this.getTemplateListError = error;
         });
@@ -49,7 +49,7 @@ export default class ProjectStore {
         projectService.getProjectList().then(response =>{
             runInAction(() =>{
                 this.projectList = response;
-            })
+            });
         }).catch(error => {
             this.getProjectListError = error;
         });
@@ -60,7 +60,7 @@ export default class ProjectStore {
         projectService.getPageList(projectName).then(response =>{
             runInAction(() =>{
                 this.pageList = response;
-            })
+            });
         }).catch(error => {
             this.getPageListError = error;
         });
@@ -73,7 +73,7 @@ export default class ProjectStore {
         projectService.createProject(templateName, projectName).then(response =>{
             runInAction(() =>{
                 this.currentProjectResult = response;
-            })
+            });
 
             this.getPageList(this.projectName);
         }).catch(error => {
@@ -90,7 +90,7 @@ export default class ProjectStore {
         projectService.openProject(projectName).then(response =>{
             runInAction(() =>{
                 this.currentProjectResult = response;
-            })
+            });
 
             this.getPageList(this.projectName);
         }).catch(error => {
@@ -140,7 +140,7 @@ export default class ProjectStore {
         projectService.getPageContent(projectName, pageName).then(response => {
             runInAction(() =>{
                 this.currentPageContent = response;
-            })
+            });
         }).catch(error => {
             this.getPageContentError = error;
         });
@@ -151,10 +151,15 @@ export default class ProjectStore {
         projectService.savePageContent(projectName, pageName, content).then(response => {
             runInAction(() =>{
                 this.savePageContentResult = response;
-            })
+            });
         }).catch(error => {
             this.savePageContentError = error;
         });
+    }
+
+    @action
+    clearCurrentPageContent = () => {
+        this.currentPageContent = '';
     }
 
     @action
@@ -162,7 +167,10 @@ export default class ProjectStore {
         projectService.addPage(projectName, pageName, content).then(response => {
             runInAction(() =>{
                 this.addPageResult = response;
-            })
+            });
+
+            this.getPageList(projectName);
+            this.setSelectedPage(pageName);
         }).catch(error => {
             this.addPageError = error;
         });
@@ -173,7 +181,11 @@ export default class ProjectStore {
         projectService.deletePage(projectName, pageName).then(response => {
             runInAction(() =>{
                 this.deletePageResult = response;
-            })
+            });
+
+            this.setSelectedPage(null);
+            this.clearCurrentPageContent();
+            this.getPageList(projectName);
         }).catch(error => {
             this.deletePageError = error;
         });

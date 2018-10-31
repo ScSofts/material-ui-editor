@@ -6,8 +6,8 @@ const outputDirectory = 'dist';
 
 module.exports = {
   entry: {
-    'bundle': './src/client/index.js',
-    'style': './static/css/app.css'
+    bundle: ['babel-polyfill', './src/client/index.js'],
+    style: './static/css/app.css'
   },
   output: {
     path: path.join(__dirname, outputDirectory),
@@ -46,7 +46,7 @@ module.exports = {
     port: 3000,
     open: true,
     proxy: {
-      '/api': 'http://localhost:5001'
+      '/api': 'http://localhost:5000'
     }
   },
   plugins: [

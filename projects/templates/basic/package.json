@@ -4,7 +4,7 @@
     "description": "Basic template",
     "main": "index.js",
     "scripts": {
-        "start": "webpack-dev-server --https --watch",
+        "start": "webpack-dev-server --watch",
         "build": "webpack --optimize-minimize"
     },
     "author": "Rajitha Wimalasooriya",
