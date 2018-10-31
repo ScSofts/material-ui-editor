@@ -3,12 +3,12 @@ import { getResponseJson } from '../tools';
 
 class ProjectService {
     getTemplateList() {
-        const url = '/projects/templates';
+        const url = '/api/projects/templates';
         return fetch(url).then(getResponseJson);
     }
 
     createProject(templateName, projectName) {
-        const url = '/projects';
+        const url = '/api/projects';
         return fetch(url, {
             method: 'post',
             body: JSON.stringify({
@@ -20,29 +20,29 @@ class ProjectService {
     }
 
     openProject(projectName) {
-        const url = `/projects/${projectName}`;
+        const url = `/api/projects/${projectName}`;
         return fetch(url, {
             method: 'post'
         }).then(getResponseJson);
     }
 
     getProjectList() {
-        const url = '/projects';
+        const url = '/api/projects';
         return fetch(url).then(getResponseJson);
     }
 
     getPageList(projectName) {
-        const url = `/projects/${projectName}/pages`;
+        const url = `/api/projects/${projectName}/pages`;
         return fetch(url).then(getResponseJson);
     }
 
     getPageContent(projectName, pageName) {
-        const url = `/projects/${projectName}/pages/${pageName}`;
+        const url = `/api/projects/${projectName}/pages/${pageName}`;
         return fetch(url).then(getResponseJson);
     }
 
     savePageContent(projectName, pageName, content) {
-        const url = `/projects/${projectName}/pages/${pageName}`;
+        const url = `/api/projects/${projectName}/pages/${pageName}`;
         return fetch(url, {
             method: 'put',
             body: JSON.stringify({
@@ -53,12 +53,12 @@ class ProjectService {
     }
 
     exportProject(projectName) {
-        const url = `/projects/${projectName}/export`;
+        const url = `/api/projects/${projectName}/export`;
         return fetch(url).then(getResponseJson);
     }
 
     addPage(projectName, pageName, content) {
-        const url = `/projects/${projectName}/pages/${pageName}`;
+        const url = `/api/projects/${projectName}/pages/${pageName}`;
         return fetch(url, {
             method: 'post',
             body: JSON.stringify({
@@ -69,7 +69,7 @@ class ProjectService {
     }
 
     deletePage(projectName, pageName) {
-        const url = `/projects/${projectName}/pages/${pageName}`;
+        const url = `/api/projects/${projectName}/pages/${pageName}`;
         return fetch(url, {
             method: 'delete'
         }).then(getResponseJson);

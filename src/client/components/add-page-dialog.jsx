@@ -10,12 +10,12 @@ import TextField from '@material-ui/core/TextField';
 
 import { pageTemplate } from '../constants/pageTemplate';
 
-@inject('rootStore', 'projectsStore')
+@inject('rootStore', 'projectStore')
 @observer
 class AddPageDialog extends React.Component {
     render() {
-        const { rootStore, projectsStore } = this.props;
-        const { tempPageName } = projectsStore;
+        const { rootStore, projectStore } = this.props;
+        const { tempPageName } = projectStore;
 
         return (
             <Dialog
@@ -54,29 +54,29 @@ class AddPageDialog extends React.Component {
     }
 
     handlePageNameChange = (event) => {
-        this.props.projectsStore.setTempPageName(event.target.value);
+        this.props.projectStore.setTempPageName(event.target.value);
     }
 
     handleClose = () => {
-        const { rootStore, projectsStore } = this.props;
+        const { rootStore, projectStore } = this.props;
 
         rootStore.setAddPageDialogOpen(false);
-        projectsStore.setTempPageName(false);
+        projectStore.setTempPageName(false);
     }
 
     handleAddPage = () => {
-        const { projectsStore } = this.props;
-        const pageName = projectsStore.tempPageName.toPascalCase();
+        const { projectStore } = this.props;
+        const pageName = projectStore.tempPageName.toPascalCase();
         const pageContent = pageTemplate.format(pageName);
 
-        projectsStore.addPage(projectsStore.projectName, pageName, pageContent);
+        projectStore.addPage(projectStore.projectName, pageName, pageContent);
         this.handleClose();
     }
 }
 
 AddPageDialog.propTypes = {
     rootStore: PropTypes.object,
-    projectsStore: PropTypes.object
+    projectStore: PropTypes.object
 }
 
 export default AddPageDialog;

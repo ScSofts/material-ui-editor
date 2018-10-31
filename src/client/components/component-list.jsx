@@ -17,7 +17,7 @@ class ComponentList extends React.Component {
             <List>
                 {
                     components.map((component, index) =>
-                        <ListItem button key={index} onClick={this.componentClickHandler(component)} disabled={!projectsStore.projectName}>
+                        <ListItem button key={index} onClick={this.componentClickHandler(component)} disabled={!projectStore.projectName}>
                             <Tooltip title={component.displayName}>
                                 <ListItemIcon>
                                     {component.icon}
@@ -50,7 +50,7 @@ class ComponentList extends React.Component {
 }
 
 ComponentList.propTypes = {
-    projectsStore: PropTypes.object
+    projectStore: PropTypes.object
 }
 
 export default ComponentList;
