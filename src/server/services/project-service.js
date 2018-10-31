@@ -60,8 +60,8 @@ class ProjectService {
             var maxPort = this.getMaxProt();
             maxPort = (maxPort ? maxPort.port: 3000) + 1;
 
-            const sourceDir = join(__dirname, '..', templatesPath, templateName);
-            const destDir = join(__dirname, '..', projectsPath, projectName);
+            const sourceDir = join(templatesPath, templateName);
+            const destDir = join(projectsPath, projectName);
 
             copy(sourceDir, destDir, err => {
                 if(err) {
@@ -94,7 +94,7 @@ class ProjectService {
             var maxPort = this.getMaxProt();
             maxPort = (maxPort || 3000) + 1;
 
-            const projectDir = join(__dirname, '..', projectsPath, projectName);
+            const projectDir = join(projectsPath, projectName);
             exec('npm start -- --port ' + maxPort, {
                 cwd: projectDir
             });
@@ -208,8 +208,8 @@ class ProjectService {
     }
 
     archiveProject(projectName, callback) {
-        const exportFile = join(__dirname, '..', exportPath, `${projectName}.zip`);
-        const projectDir = join(__dirname, '..', projectsPath, projectName);
+        const exportFile = join(exportPath, `${projectName}.zip`);
+        const projectDir = join(projectsPath, projectName);
 
         // create a file to stream archive data to.
         const output = createWriteStream(exportFile);

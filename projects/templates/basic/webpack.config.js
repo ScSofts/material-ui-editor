@@ -4,10 +4,7 @@ const webpackConfig = {
     name: 'client',
     target: 'web',
     mode: 'development',
-    entry: {
-        app: ['babel-polyfill', path.resolve('src/index.jsx')],
-    },
-
+    entry: './src/index.jsx',
     module: {
         rules: [{
             test: /\.(js|jsx)$/,
