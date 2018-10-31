@@ -1,5 +1,5 @@
 const { exec, execSync } = require('child_process')
-const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync } = require('fs');
+const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, chmodSync } = require('fs');
 const { copy } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
@@ -118,7 +118,14 @@ class ProjectService {
 
         fileList.forEach(file => {
             const filePath = join(dir, file);
-            setSync(filePath, {readonly: false});
+            try {
+                // Clear read-only for windows
+                setSync(filePath, {readonly: false});
+            }
+            catch(ex) {
+                // Clear read-only for non windows
+                chmodSync(filePath, 777);
+            }
         });
     }
 
