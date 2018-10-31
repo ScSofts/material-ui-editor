@@ -7,7 +7,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 
 import HeaderMenu from './header-menu';
-import Logo from '../../../../public/images/material-ui-logo.svg';
+import Logo from '../../../../static/images/material-ui-logo.svg';
 
 const styles = theme => ({
     appBar: {

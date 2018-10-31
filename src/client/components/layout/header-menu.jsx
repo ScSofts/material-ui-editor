@@ -50,7 +50,13 @@ class HeaderMenu extends React.Component {
                     <Divider />
                     <MenuItem onClick={this.pageListClickHandler}>Toggle Page List</MenuItem>
                     <Divider />
-                    <MenuItem component="a" href={`/projects/${projectStore.projectName}/export`} disabled={!projectStore.projectName}>Export Project</MenuItem>
+                    <MenuItem 
+                        component="a" 
+                        href={`/api/projects/${projectStore.projectName}/export`} 
+                        disabled={!projectStore.projectName}
+                    >
+                        Export Project
+                    </MenuItem>
                     <MenuItem onClick={this.importClickHandler}>Import Project</MenuItem>
                     <Divider />
                     <MenuItem onClick={this.helpClickHandler}>Help</MenuItem>

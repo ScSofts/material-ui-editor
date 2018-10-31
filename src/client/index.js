@@ -26,4 +26,7 @@ class Root extends React.Component {
     }
 }
 
+// Switch to typography v2
+window.__MUI_USE_NEXT_TYPOGRAPHY_VARIANTS__ = true;
+
 ReactDOM.render(<Root />, document.getElementById('root'));

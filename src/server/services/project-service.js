@@ -1,5 +1,5 @@
 const { exec, execSync } = require('child_process')
-const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync } = require('fs');
+const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, chmodSync } = require('fs');
 const { copy } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
@@ -60,8 +60,8 @@ class ProjectService {
             var maxPort = this.getMaxProt();
             maxPort = (maxPort ? maxPort.port: 3000) + 1;
 
-            const sourceDir = join(__dirname, '..', templatesPath, templateName);
-            const destDir = join(__dirname, '..', projectsPath, projectName);
+            const sourceDir = join(templatesPath, templateName);
+            const destDir = join(projectsPath, projectName);
 
             copy(sourceDir, destDir, err => {
                 if(err) {
@@ -94,7 +94,7 @@ class ProjectService {
             var maxPort = this.getMaxProt();
             maxPort = (maxPort || 3000) + 1;
 
-            const projectDir = join(__dirname, '..', projectsPath, projectName);
+            const projectDir = join(projectsPath, projectName);
             exec('npm start -- --port ' + maxPort, {
                 cwd: projectDir
             });
@@ -118,7 +118,14 @@ class ProjectService {
 
         fileList.forEach(file => {
             const filePath = join(dir, file);
-            setSync(filePath, {readonly: false});
+            try {
+                // Clear read-only for windows
+                setSync(filePath, {readonly: false});
+            }
+            catch(ex) {
+                // Clear read-only for non windows
+                chmodSync(filePath, 777);
+            }
         });
     }
 
@@ -208,8 +215,8 @@ class ProjectService {
     }
 
     archiveProject(projectName, callback) {
-        const exportFile = join(__dirname, '..', exportPath, `${projectName}.zip`);
-        const projectDir = join(__dirname, '..', projectsPath, projectName);
+        const exportFile = join(exportPath, `${projectName}.zip`);
+        const projectDir = join(projectsPath, projectName);
 
         // create a file to stream archive data to.
         const output = createWriteStream(exportFile);

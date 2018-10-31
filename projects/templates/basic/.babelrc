@@ -1,22 +1,11 @@
 {
     "presets": [
-        ["es2015", {"modules": false}],
-        "react",
-        "stage-2"
+        "@babel/preset-env",
+        "@babel/preset-react"
     ],
-    "env": {
-        "test": {
-            "presets": [["es2015"], "react", "stage-2"],
-            "plugins": [
-                ["react-hot-loader/babel"],
-                ["transform-decorators-legacy"], 
-                ["lodash", { "id": ["lodash"] }]
-            ]
-        }
-    },
     "plugins": [
-        ["transform-decorators-legacy"],
-        ["lodash", { "id": ["lodash"] }]
+        ["@babel/plugin-proposal-decorators", { "legacy": true }],
+        ["@babel/plugin-proposal-class-properties", { "loose": true }]
     ]
-}
-
+  }
+  

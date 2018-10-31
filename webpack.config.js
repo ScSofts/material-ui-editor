@@ -5,10 +5,13 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const outputDirectory = 'dist';
 
 module.exports = {
-  entry: './src/client/index.js',
+  entry: {
+    'bundle': './src/client/index.js',
+    'style': './static/css/app.css'
+  },
   output: {
     path: path.join(__dirname, outputDirectory),
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -49,8 +52,9 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin([outputDirectory]),
     new HtmlWebpackPlugin({
-      template: './public/index.html',
-      favicon: './public/favicon.ico'
+      template: './static/index.html',
+      favicon: './static/favicon.ico',
+      chunks: ['bundle', 'style']
     })
   ],
   resolve: {
