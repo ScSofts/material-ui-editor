@@ -45,10 +45,16 @@ class HeaderMenu extends React.Component {
                     onClick={this.handleClose}
                     onClose={this.handleClose}
                 >
-                    <MenuItem onClick={this.createProjectClickHandler}>Create Project</MenuItem>
-                    <MenuItem onClick={this.openProjectClickHandler}>Open Project</MenuItem>
+                    <MenuItem onClick={this.createProjectHandler}>Create Project</MenuItem>
+                    <MenuItem onClick={this.openProjectHandler}>Open Project</MenuItem>
+                    <MenuItem 
+                        onClick={this.deleteProjectHandler}
+                        disabled={!projectStore.projectName}
+                    >
+                        Delete Project
+                    </MenuItem>
                     <Divider />
-                    <MenuItem onClick={this.pageListClickHandler}>Toggle Page List</MenuItem>
+                    <MenuItem onClick={this.togglePageListHandler}>Toggle Page List</MenuItem>
                     <Divider />
                     <MenuItem 
                         component="a" 
@@ -57,9 +63,9 @@ class HeaderMenu extends React.Component {
                     >
                         Export Project
                     </MenuItem>
-                    <MenuItem onClick={this.importClickHandler}>Import Project</MenuItem>
+                    <MenuItem onClick={this.importHandler}>Import Project</MenuItem>
                     <Divider />
-                    <MenuItem onClick={this.helpClickHandler}>Help</MenuItem>
+                    <MenuItem onClick={this.helpHandler}>Help</MenuItem>
                 </Menu>
             </div>
         );
@@ -73,22 +79,26 @@ class HeaderMenu extends React.Component {
         this.setState({ anchorEl: null });
     };
 
-    createProjectClickHandler = () => {
+    createProjectHandler = () => {
         this.props.rootStore.setCreateProjectDialogOpen(true);
     };
 
-    openProjectClickHandler = () => {
+    openProjectHandler = () => {
         this.props.rootStore.setOpenProjectDialogOpen(true);
     };
 
-    pageListClickHandler = () => {
+    deleteProjectHandler = () => {
+        this.props.rootStore.setDeleteProjectDialogOpen(true);
+    }
+
+    togglePageListHandler = () => {
         this.props.rootStore.togglePageList();
     };
 
-    importClickHandler = () => {
+    importHandler = () => {
     };
 
-    helpClickHandler = () => {
+    helpHandler = () => {
     };
 }
 

@@ -10,6 +10,7 @@ import RightDrawer from "./layout/right-drawer";
 import LoadingSpinner from "./loading-spinner";
 import CreateProjectDialog from './create-project-dialog';
 import OpenProjectDialog from './open-project-dialog';
+import DeleteProjectDialog from './delete-project-dialog';
 
 const styles = {
     root: {
@@ -36,6 +37,7 @@ class AppMain extends React.Component {
                 <LoadingSpinner />
                 <CreateProjectDialog />
                 <OpenProjectDialog />
+                <DeleteProjectDialog />
             </div>
         );
     }

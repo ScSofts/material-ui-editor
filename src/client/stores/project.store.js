@@ -32,6 +32,8 @@ export default class ProjectStore {
     @observable deletePageError = null;
     @observable addPageResult = null;
     @observable addPageError = null;
+    @observable deleteProjectResult = null;
+    @observable deleteProjectError = null;
 
     @action
     getTemplateList = () => {
@@ -163,6 +165,11 @@ export default class ProjectStore {
     }
 
     @action
+    clearPageList = () => {
+        this.pageList = [];
+    }
+
+    @action
     addPage = (projectName, pageName, content) => {
         projectService.addPage(projectName, pageName, content).then(response => {
             runInAction(() =>{
@@ -189,5 +196,27 @@ export default class ProjectStore {
         }).catch(error => {
             this.deletePageError = error;
         });
+    }
+
+    @action
+    deleteProject = (projectName) => {
+        projectService.deleteProject(projectName).then(response => {
+            runInAction(() =>{
+                this.deleteProjectResult = response;
+            });
+
+            this.clearCurrentProject();
+        }).catch(error => {
+            this.deleteProjectError = error;
+        });
+    }
+
+    @action
+    clearCurrentProject = () => {
+        this.currentProjectResult = null;
+        this.setProjectName(null)
+        this.setSelectedPage(null);
+        this.clearCurrentPageContent();
+        this.clearPageList();
     }
 }

@@ -74,6 +74,13 @@ class ProjectService {
             method: 'delete'
         }).then(getResponseJson);
     }
+
+    deleteProject(projectName) {
+        const url = `/api/projects/${projectName}`;
+        return fetch(url, {
+            method: 'delete'
+        }).then(getResponseJson);
+    }
 }
 
 const projectService = new ProjectService();
