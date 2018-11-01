@@ -1,6 +1,6 @@
-const { exec, execSync } = require('child_process')
+const { execSync, spawn } = require('child_process')
 const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, chmodSync } = require('fs');
-const { copy } = require('fs-extra');
+const { copy, remove } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
 const archiver = require('archiver');
@@ -54,9 +54,9 @@ class ProjectService {
     }
 
     createProject (templateName, projectName, callback) {
-        var p = this.projects.filter((p) => p.name === projectName.toLowerCase());
+        var projects = this.projects.filter(p => p.name === projectName.toLowerCase());
 
-        if (p.length === 0) {      
+        if (projects.length === 0) {      
             var maxPort = this.getMaxProt();
             maxPort = (maxPort ? maxPort.port: 3000) + 1;
 
@@ -76,11 +76,11 @@ class ProjectService {
                         cwd: destDir
                     });
     
-                    exec('npm start -- --port ' + maxPort, {
+                    const process = spawn('npm start -- --port ' + maxPort, {
                         cwd: destDir
                     });
 
-                    this.projects.push({name: projectName.toLowerCase(), port: maxPort});
+                    this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
                     callback(null, {port: maxPort});                            
                 }
             });
@@ -88,22 +88,22 @@ class ProjectService {
     }
 
     openProject (projectName, callback) {
-        var p = this.projects.filter((p) => p.name === projectName.toLowerCase());
+        var projects = this.projects.filter(p => p.name === projectName.toLowerCase());
 
-        if (p.length === 0) {      
+        if (projects.length === 0) {      
             var maxPort = this.getMaxProt();
             maxPort = (maxPort || 3000) + 1;
 
             const projectDir = join(projectsPath, projectName);
-            exec('npm start -- --port ' + maxPort, {
+            const process = spawn('npm start -- --port ' + maxPort, {
                 cwd: projectDir
             });
 
-            this.projects.push({name: projectName.toLowerCase(), port: maxPort});
+            this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
             callback(null, {port: maxPort});  
         }
         else {
-            callback(null, {port: p[0].port});
+            callback(null, {port: projects[0].port});
         }
     }
 
@@ -241,6 +241,27 @@ class ProjectService {
         });
 
         archive.finalize();
+    }
+
+    deleteProject(projectName, callback) {
+        const projectIndex = this.projects.findIndex(p => p.name === projectName.toLowerCase());
+        const projectDir = join(projectsPath, projectName);
+
+        if(projectIndex >= 0) {
+            const project = this.projects[projectIndex];
+
+            this.projects.splice(projectIndex, 1);
+            project.process.kill();
+        }
+
+        remove(projectDir, err => {
+            if(err) {
+                callback(err, null);
+            }
+            else {
+                callback(null, {status: 'success'});
+            }
+        });
     }
 }
 

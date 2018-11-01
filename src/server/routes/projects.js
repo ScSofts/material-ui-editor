@@ -116,7 +116,7 @@ router.post('/:projectName/pages/:pageName', (req, res, next) => {
     });
 });
 
-/* POST delete page. */
+/* DELETE delete page. */
 router.delete('/:projectName/pages/:pageName', (req, res, next) => {
     const projectName = req.params.projectName;
     const pageName = req.params.pageName;
@@ -142,6 +142,20 @@ router.get('/:projectName/export', (req, res, next) => {
         }
         else {
             res.download(result);
+        }
+    });
+});
+
+/* DELETE delete project. */
+router.delete('/:projectName', (req, res, next) => {
+    const projectName = req.params.projectName;
+
+    projectService.deleteProject(projectName, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.json(result);
         }
     });
 });
