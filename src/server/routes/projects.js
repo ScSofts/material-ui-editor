@@ -1,7 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
-var projectService = require('../services/project-service');
+const multer  = require('multer');
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, './import')
+    },
+    filename: function (req, file, cb) {
+        cb(null, file.originalname)
+    }
+});
+const upload = multer({ storage: storage });
+
+const projectService = require('../services/project-service');
 
 /* GET project list. */
 router.get('/', (req, res, next) => {
@@ -21,6 +32,20 @@ router.post('/', (req, res, next) => {
     const projectName = req.body.project;
 
     projectService.createProject(templateName, projectName, (err, result) => {
+        if(err) {
+            next(err);
+        }
+        else {
+            res.json(result);
+        }
+    });
+});
+
+/* POST import project. */
+router.post('/import', upload.single('project'), (req, res, next) => {
+    const projectFile = req.file;
+
+    projectService.importProject(projectFile, (err, result) => {
         if(err) {
             next(err);
         }

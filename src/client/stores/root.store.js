@@ -13,6 +13,7 @@ export default class RootStore {
     @observable isAddPageDialogOpen = false;
     @observable isDeletePageDialogOpen = false;
     @observable isDeleteProjectDialogOpen = false;
+    @observable isImportProjectDialogOpen = false;
 
     @action
     setBusy(busy) {
@@ -52,5 +53,10 @@ export default class RootStore {
     @action
     setDeleteProjectDialogOpen(open) {
         this.isDeleteProjectDialogOpen = open;
+    }
+
+    @action
+    setImportProjectDialogOpen(open) {
+        this.isImportProjectDialogOpen = open;
     }
 }

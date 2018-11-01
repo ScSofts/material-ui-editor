@@ -34,6 +34,9 @@ export default class ProjectStore {
     @observable addPageError = null;
     @observable deleteProjectResult = null;
     @observable deleteProjectError = null;
+    @observable importProjectFile = null;
+    @observable importProjectResult = null;
+    @observable importProjectError = null;
 
     @action
     getTemplateList = () => {
@@ -218,5 +221,21 @@ export default class ProjectStore {
         this.setSelectedPage(null);
         this.clearCurrentPageContent();
         this.clearPageList();
+    }
+
+    @action
+    setImportProjectFile = (file) => {
+        this.importProjectFile = file;
+    }
+
+    @action
+    importProject = (projectFile) => {
+        projectService.importProject(projectFile).then(response => {
+            runInAction(() =>{
+                this.importProjectResult = response;
+            });
+        }).catch(error => {
+            this.importProjectError = error;
+        });
     }
 }

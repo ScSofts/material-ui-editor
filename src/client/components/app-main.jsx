@@ -11,6 +11,7 @@ import LoadingSpinner from "./loading-spinner";
 import CreateProjectDialog from './create-project-dialog';
 import OpenProjectDialog from './open-project-dialog';
 import DeleteProjectDialog from './delete-project-dialog';
+import ImportProjectDialog from './import-project-dialog';
 
 const styles = {
     root: {
@@ -38,6 +39,7 @@ class AppMain extends React.Component {
                 <CreateProjectDialog />
                 <OpenProjectDialog />
                 <DeleteProjectDialog />
+                <ImportProjectDialog />
             </div>
         );
     }

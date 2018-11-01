@@ -96,6 +96,7 @@ class HeaderMenu extends React.Component {
     };
 
     importHandler = () => {
+        this.props.rootStore.setImportProjectDialogOpen(true);
     };
 
     helpHandler = () => {

@@ -63,8 +63,11 @@ typings/
 # distribution files
 dist
 
-# export temp folder
-export
+# export temp folder files
+export/**
+
+# import temp folder files
+import/**
 
 # exclude everything in projects folder except the templates folder
 projects

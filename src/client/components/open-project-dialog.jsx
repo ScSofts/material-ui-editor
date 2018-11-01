@@ -50,7 +50,7 @@ class OpenProjectDialog extends React.Component {
                                 key={index} 
                                 button
                                 selected={tempProjectName === project}
-                                onClick={this.handleListItemClick(project)}
+                                onClick={this.handleProjectSelect(project)}
                             >
                                 <ListItemText primary={project} />
                             </ListItem>)
@@ -65,7 +65,7 @@ class OpenProjectDialog extends React.Component {
                         Cancel
                     </Button>
                     <Button 
-                        onClick={this.handleOpenClick} 
+                        onClick={this.handleOpen} 
                         color="primary"
                         disabled={!tempProjectName}
                     >
@@ -83,11 +83,11 @@ class OpenProjectDialog extends React.Component {
         projectStore.setTempProjectName(null);
     }
 
-    handleListItemClick = (project) => () => {
+    handleProjectSelect = (project) => () => {
         this.props.projectStore.setTempProjectName(project);
     }
 
-    handleOpenClick = () => {
+    handleOpen = () => {
         const { projectStore } = this.props;
 
         // Open project

@@ -263,6 +263,10 @@ class ProjectService {
             }
         });
     }
+
+    importProject(projectFile, callback) {
+        callback({status: 'success'});
+    }
 }
 
 module.exports = new ProjectService();

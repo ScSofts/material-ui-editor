@@ -15,7 +15,9 @@ class ProjectService {
                 template: templateName,
                 project: projectName
             }),
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Content-Type": "application/json"
+            }
         }).then(getResponseJson);
     }
 
@@ -48,7 +50,9 @@ class ProjectService {
             body: JSON.stringify({
                 content: content
             }),
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Content-Type": "application/json"
+            }
         }).then(getResponseJson);
     }
 
@@ -64,7 +68,9 @@ class ProjectService {
             body: JSON.stringify({
                 content: content
             }),
-            headers: {"Content-Type": "application/json"}
+            headers: {
+                "Content-Type": "application/json"
+            }
         }).then(getResponseJson);
     }
 
@@ -79,6 +85,14 @@ class ProjectService {
         const url = `/api/projects/${projectName}`;
         return fetch(url, {
             method: 'delete'
+        }).then(getResponseJson);
+    }
+
+    importProject(projectFile) {
+        const url = `/projects/import`;
+        return fetch(url, {
+            method: 'POST',
+            body: projectFile
         }).then(getResponseJson);
     }
 }
