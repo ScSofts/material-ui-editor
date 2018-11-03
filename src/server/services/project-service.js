@@ -1,9 +1,10 @@
-const { execSync, spawn } = require('child_process')
+const { exec, execSync } = require('child_process')
 const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, chmodSync } = require('fs');
 const { copy, remove } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
 const archiver = require('archiver');
+const psTree = require('ps-tree');
 
 const projectsPath = './projects/';
 const templatesPath = `${projectsPath}templates/`;
@@ -76,7 +77,7 @@ class ProjectService {
                         cwd: destDir
                     });
     
-                    const process = spawn('npm start -- --port ' + maxPort, {
+                    const process = exec('npm start -- --port ' + maxPort, {
                         cwd: destDir
                     });
 
@@ -95,7 +96,7 @@ class ProjectService {
             maxPort = (maxPort || 3000) + 1;
 
             const projectDir = join(projectsPath, projectName);
-            const process = spawn('npm start -- --port ' + maxPort, {
+            const process = exec('npm start -- --port ' + maxPort, {
                 cwd: projectDir
             });
 
@@ -249,12 +250,76 @@ class ProjectService {
 
         if(projectIndex >= 0) {
             const project = this.projects[projectIndex];
+            const pid = project.process.pid;
+            const isWin = /^win/.test(process.platform);
+
+            if(!isWin) {
+                this.killProcess(pid, null, err => {
+                    if(err) {
+                        callback(err, null);
+                    }
+                    else {
+                        this.deleteDirectory(projectDir, callback);
+                    }
+                });
+            } else {
+                var cp = require('child_process');
+                cp.exec('taskkill /PID ' + pid + ' /T /F', (err, stdout, stderr) => {
+                    console.log('stdout: ' + stdout);
+                    console.log('stderr: ' + stderr);
+
+                    if(err) {
+                        callback(err, null);
+                    }
+                    else {
+                        this.deleteDirectory(projectDir, callback);
+                    }
+                });             
+            }
 
             this.projects.splice(projectIndex, 1);
-            project.process.kill();
         }
+    }
 
-        remove(projectDir, err => {
+    killProcess (pid, signal, callback) {
+        signal   = signal || 'SIGKILL';
+        callback = callback || function () {};
+        var killTree = true;
+        if(killTree) {
+            psTree(pid, (err, children) => {
+                if(err) {
+                    callback(err, null);
+                }
+                else {
+                    [pid].concat(children.map(p => {
+                        return p.PID;
+                    }))
+                    .forEach(tpid => {
+                        try { 
+                            process.kill(tpid, signal); 
+                        }
+                        catch (ex) {
+                            callback(ex, null);
+                            return;
+                        }
+                    });
+
+                    callback(null, {status: 'success'});
+                }
+            });
+        } else {
+            try { 
+                process.kill(pid, signal);
+                callback(null, {status: 'success'});
+            }
+            catch (ex) {
+                callback(ex);
+            }
+        }
+    }
+
+    deleteDirectory(directory, callback) {
+        remove(directory, err => {
             if(err) {
                 callback(err, null);
             }

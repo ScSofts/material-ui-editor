@@ -17,7 +17,7 @@ const styles = {
     }
 };
 
-@inject('rootStore', 'projectsStore')
+@inject('rootStore', 'projectStore')
 @observer
 class ImportProjectDialog extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class ImportProjectDialog extends React.Component {
     }
 
     render() {
-        const { classes, rootStore, projectsStore } = this.props;
+        const { classes, rootStore, projectStore } = this.props;
         const open = rootStore.isImportProjectDialogOpen;
 
         return (
@@ -56,7 +56,7 @@ class ImportProjectDialog extends React.Component {
                     <Button component="span" color="primary" variant="contained">Choose file</Button>
                 </label>
                 <Typography variant="body2" className={classes.fileName}>
-                    {projectsStore.importProjectFile && projectsStore.importProjectFile.name}
+                    {projectStore.importProjectFile && projectStore.importProjectFile.name}
                 </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -78,24 +78,24 @@ class ImportProjectDialog extends React.Component {
     }
 
     handleClose = () => {
-        const { rootStore, projectsStore } = this.props;
+        const { rootStore, projectStore } = this.props;
 
         rootStore.setImportProjectDialogOpen(false);
-        projectsStore.setImportProjectFile(null);
+        projectStore.setImportProjectFile(null);
     }
 
     handleUpload = () => {
         const fileInputRef = this.fileInputRef;
 
         if(fileInputRef && fileInputRef.files.length > 0) {
-            this.props.projectsStore.setImportProjectFile(fileInputRef.files[0]);
+            this.props.projectStore.setImportProjectFile(fileInputRef.files[0]);
         }
     }
 
     handleImport = () => {
-        const { projectsStore } = this.props;
+        const { projectStore } = this.props;
 
-        projectsStore.importProject(projectsStore.importProjectFile);
+        projectStore.importProject(projectStore.importProjectFile);
         this.handleClose();
     }
 
@@ -107,7 +107,7 @@ class ImportProjectDialog extends React.Component {
 ImportProjectDialog.propTypes = {
     classes: PropTypes.object.isRequired,
     rootStore: PropTypes.object,
-    projectsStore: PropTypes.object
+    projectStore: PropTypes.object
 }
 
 export default withStyles(styles)(ImportProjectDialog);
