@@ -35,6 +35,7 @@ export default class ProjectStore {
     @observable deleteProjectResult = null;
     @observable deleteProjectError = null;
     @observable importProjectFile = null;
+    @observable importProjectForm = null;
     @observable importProjectResult = null;
     @observable importProjectError = null;
 
@@ -229,8 +230,13 @@ export default class ProjectStore {
     }
 
     @action
-    importProject = (projectFile) => {
-        projectService.importProject(projectFile).then(response => {
+    setImportProjectForm = (form) => {
+        this.importProjectForm = form;
+    }
+
+    @action
+    importProject = (projectForm) => {
+        projectService.importProject(projectForm).then(response => {
             runInAction(() =>{
                 this.importProjectResult = response;
             });

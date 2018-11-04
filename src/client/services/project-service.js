@@ -88,11 +88,13 @@ class ProjectService {
         }).then(getResponseJson);
     }
 
-    importProject(projectFile) {
-        const url = `/projects/import`;
+    importProject(projectForm) {
+        const url = `/api/projects/import`;
+        const formData = new FormData(projectForm);
+
         return fetch(url, {
             method: 'POST',
-            body: projectFile
+            body: formData
         }).then(getResponseJson);
     }
 }

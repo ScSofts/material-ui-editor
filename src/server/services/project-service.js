@@ -3,12 +3,14 @@ const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, ch
 const { copy, remove } = require('fs-extra');
 const { join, parse } = require('path');
 const { setSync } = require('winattr');
+const AdmZip = require('adm-zip');
 const archiver = require('archiver');
 const psTree = require('ps-tree');
 
 const projectsPath = './projects/';
 const templatesPath = `${projectsPath}templates/`;
 const exportPath = './export/';
+const importPath = './import/';
 const pagesPath = 'src/components/pages';
 
 class ProjectService {
@@ -70,7 +72,7 @@ class ProjectService {
                 }
                 else {
                     const pagesDir = join(destDir, pagesPath);
-                    // Remove read-only attribute from the files in the pages folder
+                    // Remove read-only attribute from the files in the pages directory
                     this.clearReadonly(pagesDir);
 
                     execSync('npm install', {
@@ -212,21 +214,28 @@ class ProjectService {
     }
 
     exportProject(projectName, callback) {
-        this.archiveProject(projectName, (err, result) => callback(err, result));
+        const projectDir = join(projectsPath, projectName);
+        const excludePatterns = ['node_modules/**'];
+
+        this.archeveDirectory(
+            projectDir, 
+            exportPath, 
+            projectName, 
+            excludePatterns, 
+            (err, result) => callback(err, result));
     }
 
-    archiveProject(projectName, callback) {
-        const exportFile = join(exportPath, `${projectName}.zip`);
-        const projectDir = join(projectsPath, projectName);
+    archeveDirectory(sourceDirPath, destDirPath, destFileName, excludePatterns, callback) {
+        const archiveFile = join(destDirPath, `${destFileName}.zip`);
 
         // create a file to stream archive data to.
-        const output = createWriteStream(exportFile);
+        const output = createWriteStream(archiveFile);
         const archive = archiver('zip');
 
         output.on('close', () => {
             console.log(archive.pointer() + ' total bytes');
             console.log('archiver has been finalized and the output file descriptor has closed.');
-            callback(null, exportFile);
+            callback(null, archiveFile);
         });
         
         archive.on('error', err => {
@@ -235,10 +244,10 @@ class ProjectService {
         
         archive.pipe(output);
 
-        // Archive everything in the project directory except node modules
+        // Archive everything in the source directory except for excluded patterns
         archive.glob('**', {
-            cwd: projectDir,
-            ignore: ['node_modules/**']
+            cwd: sourceDirPath,
+            ignore: excludePatterns
         });
 
         archive.finalize();
@@ -259,7 +268,7 @@ class ProjectService {
                         callback(err, null);
                     }
                     else {
-                        this.deleteDirectory(projectDir, callback);
+                        this.deleteFileOrDirectory(projectDir, callback);
                     }
                 });
             } else {
@@ -272,7 +281,7 @@ class ProjectService {
                         callback(err, null);
                     }
                     else {
-                        this.deleteDirectory(projectDir, callback);
+                        this.deleteFileOrDirectory(projectDir, callback);
                     }
                 });             
             }
@@ -318,8 +327,8 @@ class ProjectService {
         }
     }
 
-    deleteDirectory(directory, callback) {
-        remove(directory, err => {
+    deleteFileOrDirectory(path, callback) {
+        remove(path, err => {
             if(err) {
                 callback(err, null);
             }
@@ -330,7 +339,31 @@ class ProjectService {
     }
 
     importProject(projectFile, callback) {
-        callback({status: 'success'});
+        const fileName = projectFile.filename;
+        const originalFileName = projectFile.originalname;
+        const importFilePath = join(importPath, fileName);
+        const extractPath = join(projectsPath, parse(originalFileName).name);
+
+        this.extractArchive(importFilePath, extractPath, callback);
+    }
+
+    extractArchive(sourceFilePath, destPath, callback) {
+        const zip = new AdmZip(sourceFilePath);
+
+        try {
+            zip.extractAllTo(destPath, true);
+            callback(null, {status: 'success'});
+        }
+        catch(ex) {
+            callback(ex, null);
+        }
+
+        // delete archive file after extracting
+        this.deleteFileOrDirectory(sourceFilePath, err => {
+            if(err) {
+                console.log(err);
+            }
+        });
     }
 }
 

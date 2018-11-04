@@ -24,6 +24,7 @@ class ImportProjectDialog extends React.Component {
         super(props);
 
         this.fileInputRef = null;
+        this.uploadFormRef = null;
     }
 
     render() {
@@ -43,21 +44,23 @@ class ImportProjectDialog extends React.Component {
                     </DialogContentText>
                 </DialogTitle>
                 <DialogContent>
-                <input
-                    hidden
-                    accept=".zip"
-                    id="flat-button-file"
-                    type="file"
-                    name="project"
-                    ref={this.setFileInputRef}
-                    onChange={this.handleUpload}
-                />
-                <label htmlFor="flat-button-file">
-                    <Button component="span" color="primary" variant="contained">Choose file</Button>
-                </label>
-                <Typography variant="body2" className={classes.fileName}>
-                    {projectStore.importProjectFile && projectStore.importProjectFile.name}
-                </Typography>
+                    <form ref={this.setUploadFormRef} encType="multipart/form-data">
+                        <input
+                            hidden
+                            accept=".zip"
+                            id="flat-button-file"
+                            type="file"
+                            name="project"
+                            ref={this.setFileInputRef}
+                            onChange={this.handleUpload}
+                        />
+                        <label htmlFor="flat-button-file">
+                            <Button component="span" color="primary" variant="contained">Choose file</Button>
+                        </label>
+                        <Typography variant="body2" className={classes.fileName}>
+                            {projectStore.importProjectFile && projectStore.importProjectFile.name}
+                        </Typography>
+                    </form>
                 </DialogContent>
                 <DialogActions>
                     <Button 
@@ -86,6 +89,11 @@ class ImportProjectDialog extends React.Component {
 
     handleUpload = () => {
         const fileInputRef = this.fileInputRef;
+        const uploadFormRef = this.uploadFormRef;
+
+        if(uploadFormRef) {
+            this.props.projectStore.setImportProjectForm(uploadFormRef);
+        }
 
         if(fileInputRef && fileInputRef.files.length > 0) {
             this.props.projectStore.setImportProjectFile(fileInputRef.files[0]);
@@ -95,12 +103,16 @@ class ImportProjectDialog extends React.Component {
     handleImport = () => {
         const { projectStore } = this.props;
 
-        projectStore.importProject(projectStore.importProjectFile);
+        projectStore.importProject(projectStore.importProjectForm);
         this.handleClose();
     }
 
     setFileInputRef = element => {
         this.fileInputRef = element;
+    }
+
+    setUploadFormRef = element => {
+        this.uploadFormRef = element;
     }
 }
 
