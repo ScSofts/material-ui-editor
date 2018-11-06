@@ -72,19 +72,25 @@ class ProjectService {
                 }
                 else {
                     const pagesDir = join(destDir, pagesPath);
-                    // Remove read-only attribute from the files in the pages directory
-                    this.clearReadonly(pagesDir);
 
-                    execSync('npm install', {
-                        cwd: destDir
-                    });
-    
-                    const process = exec('npm start -- --port ' + maxPort, {
-                        cwd: destDir
-                    });
+                    try {
+                        // Remove read-only attribute from the files in the pages directory
+                        this.clearReadonly(pagesDir);
 
-                    this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
-                    callback(null, {port: maxPort});                            
+                        execSync('npm install', {
+                            cwd: destDir
+                        });
+
+                        const process = exec('npm start -- --port ' + maxPort, {
+                            cwd: destDir
+                        });
+
+                        this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
+                        callback(null, {port: maxPort});
+                    }
+                    catch(ex) {
+                        callback(ex, null);
+                    }
                 }
             });
         }
@@ -121,13 +127,15 @@ class ProjectService {
 
         fileList.forEach(file => {
             const filePath = join(dir, file);
-            try {
-                // Clear read-only for windows
-                setSync(filePath, {readonly: false});
-            }
-            catch(ex) {
+            const isWin = /^win/.test(process.platform);
+
+            if(!isWin) {
                 // Clear read-only for non windows
                 chmodSync(filePath, 777);
+            }
+            else {
+                // Clear read-only for windows
+                setSync(filePath, {readonly: false});
             }
         });
     }
