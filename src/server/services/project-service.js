@@ -131,7 +131,7 @@ class ProjectService {
 
             if(!isWin) {
                 // Clear read-only for non windows
-                chmodSync(filePath, 777);
+                chmodSync(filePath, '777');
             }
             else {
                 // Clear read-only for windows
