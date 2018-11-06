@@ -65,9 +65,11 @@ dist
 
 # export temp folder files
 export/**
+!export/.gitkeep
 
 # import temp folder files
 import/**
+!import/.gitkeep
 
 # exclude everything in projects folder except the templates folder
 projects
