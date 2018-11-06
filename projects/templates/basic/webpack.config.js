@@ -1,9 +1,6 @@
 const path = require('path')
 
 const webpackConfig = {
-    name: 'client',
-    target: 'web',
-    mode: 'development',
     entry: './src/index.jsx',
     module: {
         rules: [{

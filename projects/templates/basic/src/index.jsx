@@ -11,7 +11,7 @@ class Root extends React.Component {
                 <BrowserRouter>
                     <Switch>
                         {
-                            Object.values(pages).map((page, index) => <Route key={index} path={'/' + page.name} component={page} />)
+                            Object.values(pages).map((page, index) => <Route key={index} path={'*/' + page.name} component={page} />)
                         }
                     </Switch>
                 </BrowserRouter>

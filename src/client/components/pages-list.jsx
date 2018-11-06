@@ -68,7 +68,7 @@ class PagesList extends React.Component {
     pageClickHandler = (page) => () => {
         const { rootStore, projectStore } = this.props;
         const port = projectStore.currentProjectResult.port;
-        const projectUrl = `http://localhost:${port}/${page}`;
+        const projectUrl = `/api/preview/${port}/${page}`;
 
         projectStore.setSelectedPage(page);
         projectStore.getPageContent(projectStore.projectName, page);

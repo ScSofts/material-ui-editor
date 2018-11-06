@@ -4,13 +4,13 @@
     "description": "Basic template",
     "main": "index.js",
     "scripts": {
-        "start": "webpack-dev-server --watch",
+        "start": "webpack-dev-server --mode development --devtool inline-source-map --watch",
         "build": "webpack --optimize-minimize"
     },
     "author": "Rajitha Wimalasooriya",
     "license": "MIT",
     "dependencies": {
-        "@material-ui/core": "^3.3.2",
+        "@material-ui/core": "^3.4.0",
         "@material-ui/icons": "^3.0.1",
         "react": "^16.6.0",
         "react-dom": "^16.6.0",
@@ -26,7 +26,7 @@
         "babel-loader": "^8.0.4",
         "file-loader": "^2.0.0",
         "react-hot-loader": "^4.3.12",
-        "webpack": "^4.24.0",
+        "webpack": "^4.25.1",
         "webpack-css-loaders": "^1.0.0",
         "webpack-dev-server": "^3.1.10"
     }
