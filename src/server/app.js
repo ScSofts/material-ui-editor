@@ -16,6 +16,8 @@ app.use(express.static('dist'));
 app.use('/api/projects', projectsRouter);
 app.use('/api/preview', previewRouter);
 
+// next parameter is required eventhough it is not used
+// eslint-disable-next-line
 app.use((error, req, res, next) => {
     res.status(error.status || 500);
     res.json({

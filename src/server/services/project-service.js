@@ -7,11 +7,14 @@ const AdmZip = require('adm-zip');
 const archiver = require('archiver');
 const psTree = require('ps-tree');
 
+const logger = require('./log-service')('services:project-service');
+
 const projectsPath = './projects/';
 const templatesPath = `${projectsPath}templates/`;
 const exportPath = './export/';
 const importPath = './import/';
 const pagesPath = 'src/components/pages';
+const tenMegaBytes = 1024 * 1024 * 10;
 
 class ProjectService {
     constructor() {
@@ -66,29 +69,41 @@ class ProjectService {
             const sourceDir = join(templatesPath, templateName);
             const destDir = join(projectsPath, projectName);
 
+            logger.logDebug(`createProject : Copying file for project on port ${maxPort}`);
+
             copy(sourceDir, destDir, err => {
                 if(err) {
+                    logger.logError(err);
                     callback(err, null);
                 }
                 else {
+                    logger.logDebug(`createProject : Copying file completed`);
                     const pagesDir = join(destDir, pagesPath);
 
                     try {
+                        logger.logDebug(`createProject : Clearing read-only flags`);
                         // Remove read-only attribute from the files in the pages directory
                         this.clearReadonly(pagesDir);
 
+                        logger.logDebug(`createProject : Running npm install`);
                         execSync('npm install', {
-                            cwd: destDir
+                            cwd: destDir,
+                            maxBuffer: tenMegaBytes
                         });
 
+                        logger.logDebug(`createProject : Starting project on port ${maxPort}`);
                         const process = exec('npm start -- --port ' + maxPort, {
-                            cwd: destDir
+                            cwd: destDir,
+                            maxBuffer: tenMegaBytes
+                        }, err => {
+                            logger.logError(err);
                         });
 
                         this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
                         callback(null, {port: maxPort});
                     }
                     catch(ex) {
+                        logger.logError(ex);
                         callback(ex, null);
                     }
                 }
@@ -103,16 +118,24 @@ class ProjectService {
             var maxPort = this.getMaxProt();
             maxPort = (maxPort || 3000) + 1;
 
+            logger.logDebug(`openProject : Starting project on port ${maxPort}`);
+
             const projectDir = join(projectsPath, projectName);
             const process = exec('npm start -- --port ' + maxPort, {
-                cwd: projectDir
+                cwd: projectDir,
+                maxBuffer: tenMegaBytes
+            }, err => {
+                logger.logError(err);
             });
 
             this.projects.push({name: projectName.toLowerCase(), port: maxPort, process: process});
             callback(null, {port: maxPort});  
         }
         else {
-            callback(null, {port: projects[0].port});
+            const port = projects[0].port;
+            logger.logDebug(`openProject : Project already running on port ${port}`);
+
+            callback(null, {port: port});
         }
     }
 
@@ -241,8 +264,8 @@ class ProjectService {
         const archive = archiver('zip');
 
         output.on('close', () => {
-            console.log(archive.pointer() + ' total bytes');
-            console.log('archiver has been finalized and the output file descriptor has closed.');
+            logger.logInfo(`archeveDirectory: ${archive.pointer()} total bytes`);
+            logger.logInfo(`archeveDirectory: Archiver has been finalized and the output file descriptor has closed.`);
             callback(null, archiveFile);
         });
         
@@ -282,8 +305,8 @@ class ProjectService {
             } else {
                 var cp = require('child_process');
                 cp.exec('taskkill /PID ' + pid + ' /T /F', (err, stdout, stderr) => {
-                    console.log('stdout: ' + stdout);
-                    console.log('stderr: ' + stderr);
+                    logger.logDebug('stdout: ' + stdout);
+                    logger.logError('stderr: ' + stderr);
 
                     if(err) {
                         callback(err, null);
@@ -369,7 +392,7 @@ class ProjectService {
         // delete archive file after extracting
         this.deleteFileOrDirectory(sourceFilePath, err => {
             if(err) {
-                console.log(err);
+                logger.logError(err);
             }
         });
     }
