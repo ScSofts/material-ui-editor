@@ -2,7 +2,6 @@ const { exec, execSync } = require('child_process')
 const { readdir, readFile, writeFile, unlink, createWriteStream, readdirSync, chmodSync } = require('fs');
 const { copy, remove } = require('fs-extra');
 const { join, parse } = require('path');
-const { setSync } = require('winattr');
 const AdmZip = require('adm-zip');
 const archiver = require('archiver');
 const psTree = require('ps-tree');
@@ -150,16 +149,8 @@ class ProjectService {
 
         fileList.forEach(file => {
             const filePath = join(dir, file);
-            const isWin = /^win/.test(process.platform);
 
-            if(!isWin) {
-                // Clear read-only for non windows
-                chmodSync(filePath, '777');
-            }
-            else {
-                // Clear read-only for windows
-                setSync(filePath, {readonly: false});
-            }
+            chmodSync(filePath, '777');
         });
     }
 
