@@ -63,7 +63,7 @@ class ProjectService {
 
         if (projects.length === 0) {      
             var maxPort = this.getMaxPort();
-            maxPort = (maxPort ? maxPort: 3000) + 1;
+            maxPort = (maxPort || 3000) + 1;
 
             const sourceDir = join(templatesPath, templateName);
             const destDir = join(projectsPath, projectName);

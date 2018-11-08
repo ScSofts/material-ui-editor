@@ -146,7 +146,8 @@ class CreateProjectDialog extends React.Component {
         projectStore.createProject(projectStore.tempTemplateName, projectName);
         
         projectStore.setTemplateName(projectStore.tempTemplateName);
-        projectStore.setProjectName(projectName);        this.handleClose();
+        projectStore.setProjectName(projectName);
+        this.handleClose();
     }
 }
 

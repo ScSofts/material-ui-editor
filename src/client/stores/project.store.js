@@ -81,6 +81,9 @@ export default class ProjectStore {
                 this.currentProjectResult = response;
             });
 
+            this.setSelectedPage(null);
+            this.clearCurrentPageContent();
+            this.getProjectList();
             this.getPageList(this.projectName);
         }).catch(error => {
             this.createProjectError = error;
@@ -98,6 +101,8 @@ export default class ProjectStore {
                 this.currentProjectResult = response;
             });
 
+            this.setSelectedPage(null);
+            this.clearCurrentPageContent();
             this.getPageList(this.projectName);
         }).catch(error => {
             this.openProjectError = error;
@@ -210,6 +215,7 @@ export default class ProjectStore {
             });
 
             this.clearCurrentProject();
+            this.getProjectList();
         }).catch(error => {
             this.deleteProjectError = error;
         });
@@ -240,6 +246,8 @@ export default class ProjectStore {
             runInAction(() =>{
                 this.importProjectResult = response;
             });
+
+            this.getProjectList();
         }).catch(error => {
             this.importProjectError = error;
         });
