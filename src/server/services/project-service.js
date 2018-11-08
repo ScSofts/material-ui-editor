@@ -62,8 +62,8 @@ class ProjectService {
         var projects = this.projects.filter(p => p.name === projectName.toLowerCase());
 
         if (projects.length === 0) {      
-            var maxPort = this.getMaxProt();
-            maxPort = (maxPort ? maxPort.port: 3000) + 1;
+            var maxPort = this.getMaxPort();
+            maxPort = (maxPort ? maxPort: 3000) + 1;
 
             const sourceDir = join(templatesPath, templateName);
             const destDir = join(projectsPath, projectName);
@@ -114,7 +114,7 @@ class ProjectService {
         var projects = this.projects.filter(p => p.name === projectName.toLowerCase());
 
         if (projects.length === 0) {      
-            var maxPort = this.getMaxProt();
+            var maxPort = this.getMaxPort();
             maxPort = (maxPort || 3000) + 1;
 
             logger.logDebug(`openProject : Starting project on port ${maxPort}`);
@@ -138,8 +138,10 @@ class ProjectService {
         }
     }
 
-    getMaxProt() {
+    getMaxPort() {
         const ports = this.projects.map(project => project.port);
+        logger.logDebug(`getMaxPort : ports ${ports}`);
+
         return ports.length > 0 ? Math.max(...[ports]) : 0;
     }
 
