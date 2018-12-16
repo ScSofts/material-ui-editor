@@ -142,7 +142,7 @@ class ProjectService {
         const ports = this.projects.map(project => project.port);
         logger.logDebug(`getMaxPort : ports ${ports}`);
 
-        return ports.length > 0 ? Math.max(...[ports]) : 0;
+        return ports.length > 0 ? Math.max(...ports) : 0;
     }
 
     clearReadonly(dir) {
