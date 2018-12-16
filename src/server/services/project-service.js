@@ -91,7 +91,7 @@ class ProjectService {
                         });
 
                         logger.logDebug(`createProject : Starting project on port ${maxPort}`);
-                        const process = exec('npm start -- --port ' + maxPort, {
+                        const process = exec(`npm start -- --port ${maxPort} --host 0.0.0.0`, {
                             cwd: destDir,
                             maxBuffer: tenMegaBytes
                         }, err => {
@@ -120,7 +120,7 @@ class ProjectService {
             logger.logDebug(`openProject : Starting project on port ${maxPort}`);
 
             const projectDir = join(projectsPath, projectName);
-            const process = exec('npm start -- --port ' + maxPort, {
+            const process = exec(`npm start -- --port ${maxPort} --host 0.0.0.0`, {
                 cwd: projectDir,
                 maxBuffer: tenMegaBytes
             }, err => {
