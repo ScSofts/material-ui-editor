@@ -6,7 +6,7 @@ const outputDirectory = 'dist';
 
 module.exports = {
   entry: {
-    bundle: ['babel-polyfill', 'whatwg-fetch', './src/client/index.js'],
+    bundle: ['@babel/polyfill', 'whatwg-fetch', './src/client/index.js'],
     style: './static/css/app.css'
   },
   output: {
